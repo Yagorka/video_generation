@@ -29,8 +29,8 @@ def image2video(img, prompt, id):
         guidance_scale=9.0,
         generator=generator
     ).frames[0]
-    # export_to_gif(frames, str(id)+"generatedm.gif", fps=10)
-    return str(id)+"generatedm.gif"
+    export_to_gif(frames, str(id)+"_generate.gif", fps=10)
+    return str(id)+"_generate.gif"
 
 
 

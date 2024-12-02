@@ -20,6 +20,7 @@ from aiogram.utils.keyboard import ReplyKeyboardBuilder
 from config import BOT_TOKEN, login, password
 
 import asyncio
+from PIL import Image
 
 from mc_api_utils import autorization, get_my_pages, load_photo, get_biography
 from models import image2video, image2discript
@@ -479,8 +480,21 @@ async def process_photo_sent(message: Message,
         photo_unique_id=largest_photo.file_unique_id,
         photo_id=largest_photo.file_id
     )
+    yes_news_button = InlineKeyboardButton(
+            text='Одному',
+            callback_data='one'
+    )
+    no_news_button = InlineKeyboardButton(
+        text='Нескольким',
+        callback_data='many')
+    # Добавляем кнопки в клавиатуру в один ряд
+    keyboard: list[list[InlineKeyboardButton]] = [
+        [yes_news_button, no_news_button]
+    ]
+    # Создаем объект инлайн-клавиатуры
+    markup = InlineKeyboardMarkup(inline_keyboard=keyboard)
     await message.answer(
-        text='Спасибо!\n\n'
+        text='Спасибо!\nСтраница сохранена, хотите сгенерировать видео по одному изображению или по нескольким?', reply_markup=markup
     )
     # Устанавливаем состояние ожидания выбора образования
     await state.set_state(FSMFillForm.generation)
@@ -579,9 +593,12 @@ async def process_wish_news_press(callback: CallbackQuery, state: FSMContext):
                     text='Изображение не загружено, произошла ошибка')
             
             else:
+ 
                 file_info_content = await bot.get_file(user_dict[callback.message.from_user.id]['photo_id'])
                 content_img = await bot.download_file(file_info_content.file_path)
-            prompt = image2discript(content_img, prompt="Please write a good short script that is well suited for creating an animation of this picture?")
+                content_img = Image.open(content_img)
+            #a good short script that is well suited for creating an animation of this picture?
+            prompt = image2discript(content_img, prompt="Please write short who and what does it do of this picture? ") #what is shown in the picture 
             print(prompt)
             video_name = image2video(content_img, prompt, callback.message.chat.id)
             # f = await bot.download_file(video_name)
