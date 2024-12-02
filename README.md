@@ -31,7 +31,7 @@ git clone https://github.com/Yagorka/video_generation.git
 cd video_generation
 ```
 
-0. создать файл config.py в аткоа формате:
+1. создать файл config.py в аткоа формате:
 ```
 # Вместо BOT_TOKEN нужно вставить токен вашего бота,
 # полученный у @BotFather
